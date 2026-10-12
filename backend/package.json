@@ -1,0 +1,14 @@
+{
+  "name": "taskup-backend",
+  "version": "1.0.0",
+  "description": "TaskUp: API RESTful de um gerenciador de tarefas simples",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}
