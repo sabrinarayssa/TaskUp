@@ -1,0 +1,22 @@
+# Dependências
+node_modules/
+
+# Banco de dados SQLite local
+backend/tarefas.db
+backend/tarefas.db-journal
+backend/tarefas.db-wal
+backend/tarefas.db-shm
+
+# Variáveis de ambiente
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Arquivos do sistema e editor
+.DS_Store
+Thumbs.db
+.vscode/

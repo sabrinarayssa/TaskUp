@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>TaskUp</title><link rel="stylesheet" href="style.css"></head>
+<body>
+  <section id="onboarding" class="onboarding">
+    <div class="card cadastro">
+      <a class="logo" href="#">Task<span>Up</span></a>
+      <div class="marca">✓</div><p class="eyebrow">COMECE POR AQUI</p>
+      <h1>Vamos começar?</h1>
+      <p class="texto">Informe seus dados para identificar as tarefas que você criar.</p>
+      <form id="form-login"><label for="nome-login">Nome</label><input id="nome-login" maxlength="80" placeholder="Ex.: Sabrina Rayssa" autocomplete="name" required><label for="telefone-login">Telefone</label><input id="telefone-login" type="tel" maxlength="20" placeholder="Ex.: (11) 99999-9999" autocomplete="tel" required><small>Esses dados identificarão suas tarefas futuramente.</small><button class="primario" type="submit">Continuar →</button></form>
+    </div>
+  </section>
+
+  <section id="app" class="app escondido">
+    <aside><a class="logo" href="#">Task<span>Up</span></a><nav><button class="ativo">▦ &nbsp; Minhas tarefas</button><button>□ &nbsp; Concluídas <b id="concluidas-menu">0</b></button></nav><div class="perfil"><i id="avatar">?</i><div><strong id="perfil-nome">nome</strong><small id="perfil-telefone">Telefone</small></div></div></aside>
+    <main>
+      <header><span>Suas tarefas</span><button id="nova-topo" class="primario pequeno">+ Nova tarefa</button></header>
+      <div class="conteudo">
+        <div class="introducao"><div><p class="eyebrow">PAINEL PESSOAL</p><h1>Olá, <span id="nome">nome</span></h1><p class="texto">Organize o que você precisa fazer.</p></div><button id="nova" class="primario">+ Criar tarefa</button></div>
+        <section class="estatisticas"><article><i>☷</i><div><strong id="total">0</strong><small>Tarefas criadas</small></div></article><article><i>◷</i><div><strong id="pendentes">0</strong><small>Em andamento</small></div></article><article><i>✓</i><div><strong id="finalizadas">0</strong><small>Concluídas</small></div></article></section>
+        <section><div class="titulo-lista"><h2>Minhas tarefas <b id="total-lista">0</b></h2><button>Todas ▾</button></div><div id="vazio" class="vazio"><i>✓</i><h3>Nenhuma tarefa por enquanto</h3><p>Quando quiser, crie sua primeira tarefa para começar a se organizar.</p><button class="secundario abrir" type="button">+ Criar primeira tarefa</button></div><div id="lista" class="lista"></div></section>
+      </div>
+    </main>
+  </section>
+
+  <dialog id="modal"><form id="form-tarefa"><div class="modal-topo"><div><p id="modal-eyebrow" class="eyebrow">NOVA TAREFA</p><h2 id="modal-titulo">Criar tarefa</h2></div><button id="fechar" class="fechar" type="button">×</button></div><input id="id-tarefa" type="hidden"><label for="titulo">Título da tarefa</label><input id="titulo" maxlength="80" placeholder="O que precisa ser feito?" required><label for="descricao">Descrição <span>opcional</span></label><textarea id="descricao" rows="3" placeholder="Adicione detalhes para esta tarefa"></textarea><div class="campos"><div><label for="prazo">Prazo <span>opcional</span></label><input id="prazo" type="date"></div><div><label for="prioridade">Prioridade</label><select id="prioridade"><option value="baixa">Baixa</option><option value="media" selected>Média</option><option value="alta">Alta</option></select></div></div><footer><button id="cancelar" class="texto-botao" type="button">Cancelar</button><button class="primario" type="submit">Salvar tarefa</button></footer></form></dialog>
+  <dialog id="conclusao"><div class="confirmacao"><i>✓</i><p class="eyebrow">TAREFA CONCLUÍDA</p><h2>Bom trabalho!</h2><p id="mensagem">A tarefa foi marcada como concluída.</p><button id="continuar" class="primario">Continuar</button></div></dialog>
+  <script src="script.js"></script>
+</body></html>
