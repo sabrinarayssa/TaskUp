@@ -4,11 +4,13 @@
   "description": "TaskUp: API RESTful de um gerenciador de tarefas simples",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node --experimental-sqlite src/server.js"
+  },
+  "engines": {
+    "node": ">=22.5.0"
   },
   "license": "ISC",
   "dependencies": {
-    "better-sqlite3": "^8.7.0",
     "cors": "^2.8.5",
     "express": "^5.1.0"
   }
