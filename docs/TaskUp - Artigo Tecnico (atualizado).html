@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskUp: Gerenciador de Tarefas</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 2cm;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 11.5pt;
+    }
+
+    body {
+      margin: 0;
+      background: #fff;
+      color: #000;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 11.5pt;
+      line-height: 1.45;
+      text-align: justify;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    h1 {
+      margin: 0 0 8pt;
+      font-size: 16pt;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .authors {
+      margin: 4pt 0 16pt;
+      font-size: 11pt;
+      line-height: 1.35;
+      text-align: center;
+    }
+
+    .abstract-title {
+      margin: 12pt 0 4pt;
+      font-size: 11pt;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .abstract {
+      margin: 0;
+      font-size: 10.5pt;
+      line-height: 1.38;
+      text-align: justify;
+    }
+
+    .keywords {
+      margin: 5pt 0 0;
+      font-size: 10.5pt;
+      line-height: 1.35;
+      text-align: justify;
+    }
+
+    h2 {
+      margin: 18pt 0 7pt;
+      font-size: 12.5pt;
+      line-height: 1.2;
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+
+    h3 {
+      margin: 12pt 0 4pt;
+      font-size: 11.5pt;
+      line-height: 1.2;
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+
+    p {
+      margin: 0 0 6pt;
+      text-indent: 1.25cm;
+    }
+
+    p.no-indent {
+      text-indent: 0;
+    }
+
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.92em;
+    }
+
+    .url {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .section-break {
+      page-break-before: always;
+      break-before: page;
+    }
+
+    .table-block {
+      margin: 8pt 0 14pt;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .table-caption {
+      margin: 0 0 4pt;
+      font-size: 9pt;
+      line-height: 1.25;
+      text-align: left;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 8.7pt;
+      line-height: 1.22;
+    }
+
+    th,
+    td {
+      border: 0.6pt solid #777;
+      padding: 3pt 4pt;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      background: #ececec;
+      font-weight: bold;
+    }
+
+    tr {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .table-source {
+      margin: 4pt 0 0;
+      font-size: 9pt;
+      line-height: 1.25;
+      text-align: left;
+    }
+
+    .figure {
+      margin: 12pt 0 4pt;
+      page-break-inside: avoid;
+      break-inside: avoid;
+      text-align: center;
+    }
+
+    .figure svg {
+      display: block;
+      width: 100%;
+      max-width: 470pt;
+      height: auto;
+      margin: 0 auto;
+    }
+
+    .figure-note {
+      margin: 2pt 0 3pt;
+      font-size: 8.5pt;
+      line-height: 1.25;
+      text-align: center;
+      text-indent: 0;
+    }
+
+    .figure-caption,
+    .figure-source {
+      margin: 0;
+      font-size: 9pt;
+      line-height: 1.25;
+      text-align: center;
+      text-indent: 0;
+    }
+
+    .figure-source {
+      margin-top: 2pt;
+    }
+
+    .references p {
+      margin: 0 0 5pt;
+      font-size: 10.5pt;
+      line-height: 1.3;
+      text-indent: 0;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>TASKUP: GERENCIADOR DE TAREFAS</h1>
+
+  <div class="authors">
+    Sabrina Rayssa Teixeira<br>
+    Prof. Ricardo Bicalho
+  </div>
+
+  <div class="abstract-title">RESUMO</div>
+  <p class="abstract">Este artigo apresenta o TaskUp, um gerenciador de tarefas pessoais formado por uma API RESTful e por uma interface que a consome. O objetivo do trabalho é praticar desenvolvimento backend, modelagem de banco de dados e criação de APIs REST em um sistema pequeno. A API foi feita em Node.js com Express e usa o SQLite como banco de dados. Com ela é possível cadastrar, listar, consultar, editar e excluir tarefas. O backend, o banco e a interface web já estão integrados: a interface consome a API para cadastrar usuários, organizar tarefas em categorias, criar checklists de subtarefas, visualizar os detalhes e as subtarefas diretamente na lista, buscar e filtrar tarefas, e listar, criar, editar, concluir e excluir tarefas. A exclusão funciona como uma lixeira, permitindo restaurar a tarefa antes de apagá-la definitivamente. O sistema foi publicado no Render Cloud e está disponível em <span class="url">https://taskup-rffb.onrender.com/</span>.</p>
+  <p class="keywords"><strong>Palavras-chave:</strong> API REST; Node.js; Express; SQLite; gerenciamento de tarefas.</p>
+
+  <div class="abstract-title">ABSTRACT</div>
+  <p class="abstract">This paper presents TaskUp, a personal task manager made of a RESTful API and an interface that uses it. The goal of the work is to practice backend development, database modeling and REST API design in a small system. The API was built with Node.js and Express and uses SQLite as its database. It allows users to create, list, view, edit and delete tasks. The backend, the database and the web interface are now integrated: the interface uses the API to register users, organize tasks into categories, create subtask checklists, view task details and subtasks directly in the list, search and filter tasks, and list, create, edit, complete and delete tasks. Deletion works as a trash bin, so a task can be restored before being permanently removed. The system is deployed on Render Cloud at <span class="url">https://taskup-rffb.onrender.com/</span>.</p>
+  <p class="keywords"><strong>Keywords:</strong> REST API; Node.js; Express; SQLite; task management.</p>
+
+  <h2>1. INTRODUÇÃO</h2>
+
+  <p>Um gerenciador de tarefas é uma aplicação fácil de entender e boa para praticar os conceitos da disciplina. O cliente, que é a interface, fica separado do servidor, que guarda os dados e aplica as regras, e os dois conversam por meio de uma API. Assim, a mesma API pode atender uma interface web ou um aplicativo móvel.</p>
+  <p>O TaskUp foi desenvolvido na unidade curricular Sistemas Distribuídos e Mobile. O objetivo é criar uma aplicação para organizar tarefas e, com ela, aplicar conceitos de backend, banco de dados e APIs RESTful. Como metas, o trabalho definiu implementar as operações básicas sobre as tarefas, integrar o backend a uma interface web e acrescentar recursos de organização, como categorias, subtarefas, prazos, prioridades, filtros e uma lixeira para exclusões reversíveis.</p>
+
+  <h2 class="section-break">2. FUNDAMENTAÇÃO TEÓRICA E TECNOLOGIAS</h2>
+
+  <h3>2.1. API RESTful</h3>
+  <p>REST é um estilo de arquitetura apresentado por Fielding (2000). Nele, cada coisa que a aplicação manipula é um recurso com um endereço (URL), e as operações usam os métodos do HTTP: GET para consultar, POST para criar, PUT para alterar e DELETE para excluir. A resposta traz um código de status, como 200 (sucesso), 201 (criado), 204 (sem conteúdo), 400 (requisição inválida), 404 (não encontrado) e 409 (conflito). No TaskUp, os recursos principais são usuários, categorias, tarefas e subtarefas, acessados por rotas como <code>/usuarios</code>, <code>/categoria</code> e <code>/tarefas</code>.</p>
+
+  <h3>2.2. Node.js, Express e SQLite</h3>
+  <p>Foram usados o Node.js, que executa JavaScript no servidor (NODE.JS, [s.d.]), e o Express, um framework que simplifica a criação de rotas (EXPRESS, [s.d.]). O banco de dados é o SQLite, que guarda tudo em um único arquivo e não exige instalar um servidor de banco (SQLITE, [s.d.]). Ele é acessado pelo módulo <code>node:sqlite</code>, disponível a partir do Node.js 22.5. Por isso, as únicas dependências do projeto são o Express e o CORS, este último para liberar o acesso à API a partir de outra origem, como o frontend. O projeto exige Node.js 22.5 ou superior.</p>
+
+  <h2>3. MODELAGEM E IMPLEMENTAÇÃO</h2>
+
+  <h3>3.1. Funcionalidades</h3>
+  <p>As funcionalidades do TaskUp estão na Tabela 1 e são atendidas pelos endpoints da Tabela 2. O sistema foi pensado para ser simples de usar: cada tarefa pertence a um usuário, pode ter uma categoria, um prazo, uma prioridade e um checklist de subtarefas. A categoria é opcional; quando uma categoria é excluída, as tarefas continuam existindo, mas ficam sem categoria. A busca ignora diferenças de maiúsculas, minúsculas e acentos, e os filtros de status, categoria e busca podem ser combinados. No celular, a navegação principal passa para uma barra inferior, facilitando o uso em telas pequenas.</p>
+  <p>Além disso, ao clicar em um cartão na lista, a interface expande a descrição, a prioridade, o prazo e as subtarefas da tarefa. Nesse painel, o usuário pode marcar ou desmarcar uma subtarefa e acompanhar o progresso do checklist sem abrir outra janela. O botão “Subtarefas” continua disponível para adicionar ou remover itens.</p>
+
+  <div class="table-block">
+    <p class="table-caption">Tabela 1 – Funcionalidades do TaskUp.</p>
+    <table>
+      <colgroup>
+        <col style="width: 8%;">
+        <col style="width: 19%;">
+        <col style="width: 73%;">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Funcionalidade</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>RF01</td>
+          <td>Cadastrar tarefa</td>
+          <td>Cria uma tarefa com título obrigatório e descrição, prazo, prioridade e categoria opcionais. A tarefa nasce com status pendente.</td>
+        </tr>
+        <tr>
+          <td>RF02</td>
+          <td>Listar tarefas</td>
+          <td>Retorna as tarefas ativas do usuário, das mais recentes para as mais antigas.</td>
+        </tr>
+        <tr>
+          <td>RF03</td>
+          <td>Visualizar detalhes</td>
+          <td>Retorna os dados de uma tarefa específica.</td>
+        </tr>
+        <tr>
+          <td>RF04</td>
+          <td>Editar tarefa</td>
+          <td>Altera título, descrição, prazo, prioridade, categoria ou status.</td>
+        </tr>
+        <tr>
+          <td>RF05</td>
+          <td>Marcar como concluída</td>
+          <td>Muda o status para concluída e permite reabrir a tarefa.</td>
+        </tr>
+        <tr>
+          <td>RF06</td>
+          <td>Excluir tarefa</td>
+          <td>Move a tarefa para a lixeira, sem apagá-la imediatamente.</td>
+        </tr>
+        <tr>
+          <td>RF07</td>
+          <td>Restaurar ou excluir definitivamente</td>
+          <td>Na lixeira, permite restaurar a tarefa ou apagá-la de vez. A exclusão definitiva apaga as subtarefas em cascata.</td>
+        </tr>
+        <tr>
+          <td>RF08</td>
+          <td>Gerenciar categorias</td>
+          <td>Permite cadastrar, listar, renomear e excluir categorias, associar tarefas a uma categoria e filtrar a listagem por categoria. A categoria é opcional; ao excluí-la, as tarefas ficam sem categoria.</td>
+        </tr>
+        <tr>
+          <td>RF09</td>
+          <td>Gerenciar subtarefas</td>
+          <td>Permite adicionar, concluir e remover subtarefas de uma tarefa, formando um checklist com progresso.</td>
+        </tr>
+        <tr>
+          <td>RF10</td>
+          <td>Filtrar e buscar tarefas</td>
+          <td>Permite filtrar por status e por categoria e buscar pelo título sem diferenciar maiúsculas ou acentos. Os filtros podem ser combinados.</td>
+        </tr>
+        <tr>
+          <td>RF11</td>
+          <td>Visualizar detalhes na lista</td>
+          <td>Ao clicar no cartão, exibe descrição, prioridade, prazo e subtarefas, permitindo concluir itens do checklist sem abrir outra janela.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="table-source">Fonte: Elaborado pelos autores (2026).</p>
+  </div>
+
+  <h3>3.2. Modelo de dados</h3>
+  <p>O banco possui quatro tabelas relacionadas. <code>usuarios</code> armazena nome, telefone e data de criação, com chave primária composta. <code>categorias</code> pertence a um usuário e armazena o nome da categoria. <code>tarefas</code> armazena título, descrição opcional, prazo opcional, prioridade, status e data de criação, além de referenciar o usuário por nome e telefone e, opcionalmente, uma categoria. <code>subtarefas</code> armazena o título, o indicador de concluída e a data de criação de cada item do checklist, referenciando a tarefa. A coluna <code>excluida_em</code> implementa a lixeira: quando está vazia, a tarefa aparece na listagem normal; quando recebe uma data, a tarefa passa a aparecer apenas na lixeira. Quando uma categoria é excluída, as tarefas ligadas a ela ficam sem categoria. Quando uma tarefa é apagada definitivamente, suas subtarefas são apagadas em cascata; enquanto a tarefa está na lixeira, as subtarefas são preservadas para a restauração.</p>
+
+  <div class="figure">
+    <svg viewBox="0 0 720 460" role="img" aria-label="Diagrama entidade-relacionamento do TaskUp">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#000"></path>
+        </marker>
+      </defs>
+
+      <g font-family="Arial, Helvetica, sans-serif">
+        <!-- USUARIOS -->
+        <rect x="30" y="20" width="190" height="92" fill="#fff" stroke="#000" stroke-width="1.2"></rect>
+        <rect x="30" y="20" width="190" height="22" fill="#e8e8e8" stroke="#000" stroke-width="1.2"></rect>
+        <text x="40" y="35" font-size="10" font-weight="bold">USUARIOS</text>
+        <text x="40" y="56" font-size="8.6">nome TEXT · PK</text>
+        <text x="40" y="70" font-size="8.6">telefone TEXT · PK</text>
+        <text x="40" y="84" font-size="8.6">criado_em TEXT</text>
+
+        <!-- CATEGORIAS -->
+        <rect x="460" y="20" width="230" height="120" fill="#fff" stroke="#000" stroke-width="1.2"></rect>
+        <rect x="460" y="20" width="230" height="22" fill="#e8e8e8" stroke="#000" stroke-width="1.2"></rect>
+        <text x="470" y="35" font-size="10" font-weight="bold">CATEGORIAS</text>
+        <text x="470" y="56" font-size="8.6">id INTEGER · PK</text>
+        <text x="470" y="70" font-size="8.6">usuario_nome TEXT · FK</text>
+        <text x="470" y="84" font-size="8.6">usuario_telefone TEXT · FK</text>
+        <text x="470" y="98" font-size="8.6">nome TEXT</text>
+        <text x="470" y="112" font-size="8.6">criado_em TEXT</text>
+
+        <!-- TAREFAS -->
+        <rect x="250" y="170" width="280" height="200" fill="#fff" stroke="#000" stroke-width="1.2"></rect>
+        <rect x="250" y="170" width="280" height="22" fill="#e8e8e8" stroke="#000" stroke-width="1.2"></rect>
+        <text x="260" y="185" font-size="10" font-weight="bold">TAREFAS</text>
+        <text x="260" y="206" font-size="8.6">id INTEGER · PK</text>
+        <text x="260" y="220" font-size="8.6">usuario_nome TEXT · FK</text>
+        <text x="260" y="234" font-size="8.6">usuario_telefone TEXT · FK</text>
+        <text x="260" y="248" font-size="8.6">categoria_id INTEGER · FK (opcional)</text>
+        <text x="260" y="262" font-size="8.6">titulo TEXT</text>
+        <text x="260" y="276" font-size="8.6">descricao TEXT</text>
+        <text x="260" y="290" font-size="8.6">prazo TEXT (AAAA-MM-DD)</text>
+        <text x="260" y="304" font-size="8.6">prioridade TEXT</text>
+        <text x="260" y="318" font-size="8.6">status TEXT</text>
+        <text x="260" y="332" font-size="8.6">excluida_em TEXT</text>
+        <text x="260" y="346" font-size="8.6">criado_em TEXT</text>
+
+        <!-- SUBTAREFAS -->
+        <rect x="30" y="300" width="180" height="110" fill="#fff" stroke="#000" stroke-width="1.2"></rect>
+        <rect x="30" y="300" width="180" height="22" fill="#e8e8e8" stroke="#000" stroke-width="1.2"></rect>
+        <text x="40" y="315" font-size="10" font-weight="bold">SUBTAREFAS</text>
+        <text x="40" y="336" font-size="8.6">id INTEGER · PK</text>
+        <text x="40" y="350" font-size="8.6">tarefa_id INTEGER · FK</text>
+        <text x="40" y="364" font-size="8.6">titulo TEXT</text>
+        <text x="40" y="378" font-size="8.6">concluida INTEGER (0/1)</text>
+        <text x="40" y="392" font-size="8.6">criado_em TEXT</text>
+
+        <!-- LIGAÇÕES -->
+        <line x1="220" y1="66" x2="460" y2="66" stroke="#000" stroke-width="1.1" marker-end="url(#arrow)"></line>
+        <text x="232" y="58" font-size="8.5" font-weight="bold">1</text>
+        <text x="438" y="58" font-size="8.5" font-weight="bold">N</text>
+
+        <line x1="125" y1="112" x2="292" y2="170" stroke="#000" stroke-width="1.1" marker-end="url(#arrow)"></line>
+        <text x="138" y="126" font-size="8.5" font-weight="bold">1</text>
+        <text x="276" y="160" font-size="8.5" font-weight="bold">N</text>
+
+        <line x1="575" y1="140" x2="530" y2="170" stroke="#000" stroke-width="1.1" marker-end="url(#arrow)"></line>
+        <text x="584" y="151" font-size="8.5" font-weight="bold">1</text>
+        <text x="514" y="163" font-size="8.5" font-weight="bold">N</text>
+
+        <line x1="250" y1="335" x2="210" y2="335" stroke="#000" stroke-width="1.1" marker-end="url(#arrow)"></line>
+        <text x="230" y="326" font-size="8.5" font-weight="bold">1</text>
+        <text x="192" y="326" font-size="8.5" font-weight="bold">N</text>
+
+        <text x="30" y="438" font-size="8.3">PK = chave primária · FK = chave estrangeira · 1:N = um para muitos · 0..N = relação opcional</text>
+      </g>
+    </svg>
+    <p class="figure-note">A coluna categoria_id pode ser NULL; ao excluir a categoria, a tarefa permanece sem categoria.</p>
+    <p class="figure-caption">Figura 1 – Diagrama entidade-relacionamento do TaskUp.</p>
+    <p class="figure-source">Fonte: Elaborado pelos autores (2026).</p>
+  </div>
+
+  <p>As relações são: um usuário possui várias tarefas (1:N) e várias categorias (1:N); uma categoria pode estar em várias tarefas (1:N), e a tarefa pode não ter categoria; uma tarefa possui várias subtarefas (1:N), apagadas em cascata quando a tarefa é excluída definitivamente.</p>
+
+  <h3>3.3. API do backend</h3>
+  <p>O arquivo <code>db.js</code> cria as tabelas e aplica pequenas migrações; o <code>server.js</code> apenas registra os routers. Cada domínio tem sua própria pasta em <code>src</code>, com as consultas SQL (<code>sql.js</code>) separadas das rotas (<code>routes.js</code>). A Tabela 2 resume os endpoints.</p>
+
+  <div class="table-block">
+    <p class="table-caption">Tabela 2 – Endpoints principais da API.</p>
+    <table>
+      <colgroup>
+        <col style="width: 10%;">
+        <col style="width: 32%;">
+        <col style="width: 38%;">
+        <col style="width: 20%;">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Método</th>
+          <th>Rota</th>
+          <th>Função</th>
+          <th>Respostas</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>GET</td><td><code>/usuarios</code></td><td>Lista usuários</td><td>200</td></tr>
+        <tr><td>POST</td><td><code>/usuarios</code></td><td>Cadastra usuário</td><td>201, 400, 409</td></tr>
+        <tr><td>GET</td><td><code>/categoria</code></td><td>Lista categorias</td><td>200, 400</td></tr>
+        <tr><td>POST</td><td><code>/categoria</code></td><td>Cadastra categoria</td><td>201, 400, 404, 409</td></tr>
+        <tr><td>PUT</td><td><code>/categoria/:id</code></td><td>Edita categoria</td><td>200, 400, 404, 409</td></tr>
+        <tr><td>DELETE</td><td><code>/categoria/:id</code></td><td>Exclui categoria</td><td>204, 404</td></tr>
+        <tr><td>GET</td><td><code>/tarefas</code></td><td>Lista tarefas ativas</td><td>200, 400</td></tr>
+        <tr><td>GET</td><td><code>/tarefas/lixeira</code></td><td>Lista tarefas da lixeira</td><td>200, 400</td></tr>
+        <tr><td>GET</td><td><code>/tarefas/:id</code></td><td>Detalha tarefa</td><td>200, 404</td></tr>
+        <tr><td>POST</td><td><code>/tarefas</code></td><td>Cadastra tarefa</td><td>201, 400, 404</td></tr>
+        <tr><td>PUT</td><td><code>/tarefas/:id</code></td><td>Edita tarefa e status</td><td>200, 400, 404</td></tr>
+        <tr><td>PUT</td><td><code>/tarefas/:id/restaurar</code></td><td>Restaura tarefa da lixeira</td><td>200, 400, 404</td></tr>
+        <tr><td>DELETE</td><td><code>/tarefas/:id</code></td><td>Move a tarefa para a lixeira</td><td>204, 404</td></tr>
+        <tr><td>DELETE</td><td><code>/tarefas/:id/definitivo</code></td><td>Apaga a tarefa do banco</td><td>204, 400, 404</td></tr>
+        <tr><td>GET</td><td><code>/tarefas/:id/subtarefas</code></td><td>Lista as subtarefas da tarefa</td><td>200, 404</td></tr>
+        <tr><td>POST</td><td><code>/tarefas/:id/subtarefas</code></td><td>Cadastra uma subtarefa</td><td>201, 400, 404</td></tr>
+        <tr><td>PUT</td><td><code>/tarefas/:id/subtarefas/:subtarefaId</code></td><td>Edita ou conclui uma subtarefa</td><td>200, 400, 404</td></tr>
+        <tr><td>DELETE</td><td><code>/tarefas/:id/subtarefas/:subtarefaId</code></td><td>Exclui uma subtarefa</td><td>204, 400, 404</td></tr>
+      </tbody>
+    </table>
+    <p class="table-source">Fonte: Elaborado pelos autores (2026).</p>
+  </div>
+
+  <p>O servidor valida o título obrigatório, o status (<code>pendente</code> ou <code>concluida</code>), a prioridade (<code>baixa</code>, <code>media</code> ou <code>alta</code>) e o formato do prazo (AAAA-MM-DD). A categoria é opcional, mas quando informada precisa pertencer ao mesmo usuário da tarefa. O título da subtarefa é obrigatório e a subtarefa precisa pertencer à tarefa informada na rota. Tarefas que estão na lixeira não aceitam alterações nas subtarefas: é preciso restaurá-las antes. A rota de exclusão definitiva só aceita tarefas que já estão na lixeira.</p>
+
+  <h3>3.4. Interface web</h3>
+  <p>A interface foi feita com HTML, CSS e JavaScript puro, sem framework. O arquivo <code>config.js</code> define o endereço da API; <code>script.js</code> concentra o estado da aplicação, as chamadas à API e a renderização das telas; <code>index.html</code> organiza as views e os modais; <code>style.css</code> cuida do layout e da responsividade. Há três views principais: Minhas tarefas, Concluídas e Lixeira. Os modais permitem criar e editar tarefas, gerenciar categorias e adicionar ou remover subtarefas. O login é feito com nome e telefone, e o usuário fica salvo no navegador para as próximas visitas. Ao trocar de view, a página volta ao topo para mostrar o resumo geral. Na publicação, o próprio backend entrega os arquivos do frontend, de modo que a mesma URL atende à interface e à API.</p>
+
+  <h2 class="section-break">4. RESULTADOS PARCIAIS</h2>
+
+  <h3>4.1. Teste do backend e da interface</h3>
+  <p>O backend e a interface foram executados localmente e testados com requisições HTTP e pelo navegador. O cadastro de usuário retornou 201 e um cadastro repetido retornou 409. O cadastro de categoria retornou 201, uma categoria repetida retornou 409 e a edição retornou 200. A criação de tarefa retornou 201 com status pendente, prioridade, prazo e categoria; uma prioridade inválida, um prazo fora do formato e uma categoria de outro usuário retornaram 400. O cadastro de subtarefa retornou 201, a conclusão retornou 200 e a listagem de tarefas passou a mostrar o progresso do checklist. Criar uma subtarefa sem título retornou 400, assim como tentar alterar subtarefas de uma tarefa na lixeira. A conclusão da tarefa retornou 200 e atualizou o status. A exclusão retornou 204, a tarefa saiu da listagem normal e passou a aparecer em <code>/tarefas/lixeira</code>. A restauração retornou 200 e a tarefa voltou para a listagem com suas subtarefas. A exclusão definitiva retornou 204 somente para tarefas na lixeira e apagou as subtarefas em cascata. Uma consulta a uma tarefa apagada retornou 404.</p>
+  <p>Na interface, foram testados login, gerenciamento de categorias, associação e filtro por categoria, checklist de subtarefas com progresso, busca por título sem diferenciar maiúsculas ou acentos, filtro por status, combinação de filtros, busca na lixeira, criação de categoria pelo formulário de tarefa, navegação pelo menu inferior em tela pequena, criação, edição, conclusão, envio para a lixeira, restauração, exclusão definitiva, persistência após sair e entrar, limpeza dos filtros ao sair e saída do usuário. Também foi testado o clique no cartão da tarefa, que expande a descrição, a prioridade, o prazo e o checklist de subtarefas na própria lista; uma subtarefa pode ser concluída nesse painel e o progresso é atualizado sem fechar o cartão. Ao trocar de tela depois de rolar a lista, a página volta ao topo para mostrar o resumo geral. A Tabela 3 resume os principais testes.</p>
+  <p>Depois dos testes locais, o sistema foi publicado no Render Cloud e a URL pública foi verificada: a página e a API responderam 200.</p>
+
+  <div class="table-block">
+    <p class="table-caption">Tabela 3 – Principais testes realizados.</p>
+    <table>
+      <colgroup>
+        <col style="width: 41%;">
+        <col style="width: 36%;">
+        <col style="width: 23%;">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Teste</th>
+          <th>Resultado esperado</th>
+          <th>Resultado obtido</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Cadastrar usuário novo</td><td>201</td><td>201</td></tr>
+        <tr><td>Cadastrar usuário repetido</td><td>409</td><td>409</td></tr>
+        <tr><td>Criar tarefa com prazo, prioridade e categoria</td><td>201</td><td>201</td></tr>
+        <tr><td>Criar tarefa com prioridade inválida</td><td>400</td><td>400</td></tr>
+        <tr><td>Criar tarefa com categoria de outro usuário</td><td>400</td><td>400</td></tr>
+        <tr><td>Cadastrar categoria</td><td>201</td><td>201</td></tr>
+        <tr><td>Cadastrar categoria repetida</td><td>409</td><td>409</td></tr>
+        <tr><td>Criar subtarefa</td><td>201</td><td>201</td></tr>
+        <tr><td>Criar subtarefa sem título</td><td>400</td><td>400</td></tr>
+        <tr><td>Concluir subtarefa</td><td>200 e concluida = 1</td><td>200</td></tr>
+        <tr><td>Alterar subtarefa de tarefa na lixeira</td><td>400</td><td>400</td></tr>
+        <tr><td>Concluir tarefa</td><td>200 e status concluida</td><td>200</td></tr>
+        <tr><td>Mover tarefa para a lixeira</td><td>204</td><td>204</td></tr>
+        <tr><td>Restaurar tarefa</td><td>200</td><td>200</td></tr>
+        <tr><td>Excluir definitivamente tarefa ativa</td><td>400</td><td>400</td></tr>
+        <tr><td>Excluir definitivamente tarefa na lixeira</td><td>204</td><td>204</td></tr>
+        <tr><td>Consultar tarefa apagada</td><td>404</td><td>404</td></tr>
+        <tr><td>Buscar ignorando acentos e maiúsculas</td><td>Encontra a tarefa</td><td>Funcionou</td></tr>
+        <tr><td>Combinar busca, status e categoria</td><td>Somente tarefas que atendem a todos os filtros</td><td>Funcionou</td></tr>
+        <tr><td>Expandir tarefa na lista</td><td>Descrição, prioridade, prazo e subtarefas aparecem no cartão</td><td>Funcionou</td></tr>
+        <tr><td>Concluir subtarefa na lista</td><td>Progresso atualizado sem fechar o cartão</td><td>Funcionou</td></tr>
+        <tr><td>Navegar em tela pequena</td><td>Menu inferior acessa as telas</td><td>Funcionou</td></tr>
+        <tr><td>Fluxo completo na interface</td><td>Sem erros</td><td>Sem erros</td></tr>
+      </tbody>
+    </table>
+    <p class="table-source">Fonte: Elaborado pelos autores (2026).</p>
+  </div>
+
+  <h3>4.2. Próximas etapas</h3>
+  <p>O backend e o frontend foram publicados no Render Cloud e estão disponíveis em <span class="url">https://taskup-rffb.onrender.com/</span>. Como o plano gratuito usa disco temporário, o banco de demonstração pode ser reiniciado a cada deploy.</p>
+
+  <h2>5. CONSIDERAÇÕES FINAIS</h2>
+  <p>Nesta etapa, a API do TaskUp permite cadastrar e consultar usuários e categorias e executar operações CRUD em tarefas e subtarefas, com lixeira, restauração, organização por categorias e checklists. O banco valida os dados e vincula cada tarefa a um usuário. A interface web já consome a API e permite gerenciar categorias, buscar e filtrar tarefas e acompanhar o progresso das subtarefas. O sistema foi publicado no Render Cloud em <span class="url">https://taskup-rffb.onrender.com/</span>. As próximas etapas são implementar notificações de prazos e evoluir a persistência do banco de dados, hoje limitada ao disco temporário do plano gratuito.</p>
+
+  <h2 class="section-break">6. REFERÊNCIAS</h2>
+
+  <div class="references">
+    <p>CORS. Cross-Origin Resource Sharing. MDN Web Docs. Disponível em: <span class="url">https://developer.mozilla.org/pt-BR/docs/Web/HTTP/CORS</span>. Acesso em: 3 nov. 2026.</p>
+    <p>EXPRESS. Express: Node.js web application framework. [S.l.: s.n., s.d.]. Disponível em: <span class="url">https://expressjs.com/</span>. Acesso em: 3 nov. 2026.</p>
+    <p>FIELDING, Roy Thomas. Architectural styles and the design of network-based software architectures. 2000. Tese (Doutorado) – University of California, Irvine, 2000.</p>
+    <p>NODE.JS. Node.js documentation. [S.l.: s.n., s.d.]. Disponível em: <span class="url">https://nodejs.org/docs/latest-v22.x/api/</span>. Acesso em: 3 nov. 2026.</p>
+    <p>SQLITE. SQLite documentation. [S.l.: s.n., s.d.]. Disponível em: <span class="url">https://www.sqlite.org/docs.html</span>. Acesso em: 3 nov. 2026.</p>
+  </div>
+
+</body>
+</html>
