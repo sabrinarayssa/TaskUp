@@ -325,6 +325,10 @@ async function carregarTudo() {
 }
 
 // ===================== Login (onboarding) =====================
+// 'entrar' confere a senha de uma conta existente.
+// 'criar' cadastra uma conta nova com senha.
+let modoLogin = 'entrar';
+
 function abrirApp(usuario) {
   estado.usuario = usuario;
   document.querySelector('#nome').textContent = usuario.nome;
@@ -335,27 +339,72 @@ function abrirApp(usuario) {
   app.classList.remove('escondido');
 }
 
-async function entrar(nome, telefone) {
-  // Registra o usuário no backend (se já existir, o 409 é ignorado).
-  const resposta = await fetch(`${API}/usuarios`, {
+function mostrarErroLogin(mensagem) {
+  const erro = document.querySelector('#erro-login');
+  erro.textContent = mensagem;
+  erro.classList.remove('escondido');
+}
+
+function limparErroLogin() {
+  const erro = document.querySelector('#erro-login');
+  erro.textContent = '';
+  erro.classList.add('escondido');
+}
+
+// Atualiza os textos conforme a pessoa escolheu entrar ou criar conta.
+function atualizarModoLogin() {
+  const criar = modoLogin === 'criar';
+
+  document.querySelector('#botao-login').textContent = criar ? 'Criar conta →' : 'Entrar →';
+  document.querySelector('#alternar-modo').textContent = criar
+    ? 'Já tem conta? Entrar'
+    : 'Ainda não tem conta? Criar conta';
+  document.querySelector('#senha-login').autocomplete = criar
+    ? 'new-password'
+    : 'current-password';
+  document.querySelector('#dica-login').textContent = criar
+    ? 'A senha precisa ter pelo menos 6 caracteres e fica guardada criptografada.'
+    : 'Sua senha fica guardada criptografada no servidor. Nome e telefone identificam suas tarefas.';
+
+  limparErroLogin();
+}
+
+document.querySelector('#alternar-modo').addEventListener('click', () => {
+  modoLogin = modoLogin === 'criar' ? 'entrar' : 'criar';
+  atualizarModoLogin();
+});
+
+// Envia nome, telefone e senha para o backend.
+// No modo 'criar', cadastra; no modo 'entrar', confere a senha.
+async function autenticar(nome, telefone, senha) {
+  const rota = modoLogin === 'criar' ? '/usuarios' : '/usuarios/login';
+  const resposta = await fetch(`${API}${rota}`, {
     method: 'POST',
     headers: CABECALHO_JSON,
-    body: JSON.stringify({ nome, telefone }),
+    body: JSON.stringify({ nome, telefone, senha }),
   });
-  if (!resposta.ok && resposta.status !== 409) {
-    const dados = await resposta.json().catch(() => ({}));
+
+  const dados = await resposta.json().catch(() => ({}));
+  if (!resposta.ok) {
     throw new Error(dados.erro || 'Não foi possível entrar.');
   }
 
-  localStorage.setItem(CHAVE_USUARIO, JSON.stringify({ nome, telefone }));
-  abrirApp({ nome, telefone });
+  const usuario = { nome: dados.nome, telefone: dados.telefone, senhaOk: true };
+
+  // Carrega os dados antes de esconder a tela de login. Se a API falhar,
+  // a pessoa continua no login e vê a mensagem de erro.
+  estado.usuario = usuario;
   await carregarTudo();
+
+  localStorage.setItem(CHAVE_USUARIO, JSON.stringify(usuario));
+  abrirApp(usuario);
 }
 
 function lerUsuarioSalvo() {
   try {
     const usuario = JSON.parse(localStorage.getItem(CHAVE_USUARIO));
-    return usuario?.nome && usuario?.telefone ? usuario : null;
+    // senhaOk garante que sessões antigas (antes da senha) peçam login de novo.
+    return usuario?.nome && usuario?.telefone && usuario?.senhaOk ? usuario : null;
   } catch {
     return null;
   }
@@ -385,6 +434,8 @@ function sair() {
   app.classList.add('escondido');
   document.querySelector('#onboarding').classList.remove('escondido');
   document.querySelector('#form-login').reset();
+  modoLogin = 'entrar';
+  atualizarModoLogin();
   renderizar();
 }
 
@@ -392,12 +443,19 @@ document.querySelector('#form-login').addEventListener('submit', async (evento) 
   evento.preventDefault();
   const nome = document.querySelector('#nome-login').value.trim();
   const telefone = document.querySelector('#telefone-login').value.trim();
-  if (!nome || !telefone) return;
+  const senha = document.querySelector('#senha-login').value;
+  if (!nome || !telefone || !senha) return;
+
+  limparErroLogin();
+  const botao = document.querySelector('#botao-login');
+  botao.disabled = true;
 
   try {
-    await entrar(nome, telefone);
+    await autenticar(nome, telefone, senha);
   } catch (erro) {
-    alert('Erro: ' + mensagemDeErro(erro));
+    mostrarErroLogin(mensagemDeErro(erro));
+  } finally {
+    botao.disabled = false;
   }
 });
 
@@ -838,4 +896,5 @@ async function iniciar() {
   }
 }
 
+atualizarModoLogin();
 iniciar();

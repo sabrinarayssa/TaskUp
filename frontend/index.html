@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>TaskUp</title><link rel="stylesheet" href="style.css?v=6"></head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>TaskUp</title><link rel="stylesheet" href="style.css?v=7"></head>
 <body>
   <section id="onboarding" class="onboarding">
     <div class="card cadastro">
@@ -8,7 +8,7 @@
       <div class="marca">✓</div><p class="eyebrow">COMECE POR AQUI</p>
       <h1>Vamos começar?</h1>
       <p class="texto">Informe seus dados para identificar as tarefas que você criar.</p>
-      <form id="form-login"><label for="nome-login">Nome</label><input id="nome-login" maxlength="80" placeholder="Ex.: Sabrina Rayssa" autocomplete="name" required><label for="telefone-login">Telefone</label><input id="telefone-login" type="tel" maxlength="20" placeholder="Ex.: (11) 99999-9999" autocomplete="tel" required><small>Esses dados identificarão suas tarefas futuramente.</small><button class="primario" type="submit">Continuar →</button></form>
+      <form id="form-login"><label for="nome-login">Nome</label><input id="nome-login" maxlength="80" placeholder="Ex.: Sabrina Rayssa" autocomplete="username" required><label for="telefone-login">Telefone</label><input id="telefone-login" type="tel" maxlength="20" placeholder="Ex.: (11) 99999-9999" autocomplete="tel" required><label for="senha-login">Senha</label><input id="senha-login" type="password" minlength="6" maxlength="60" placeholder="Mínimo de 6 caracteres" autocomplete="current-password" required><small id="dica-login">Sua senha fica guardada criptografada no servidor. Nome e telefone identificam suas tarefas.</small><p id="erro-login" class="erro-login escondido" role="alert"></p><button id="botao-login" class="primario" type="submit">Entrar →</button><button id="alternar-modo" class="texto-botao trocar-modo" type="button">Ainda não tem conta? Criar conta</button></form>
     </div>
   </section>
 
@@ -29,6 +29,6 @@
   <dialog id="modal-subtarefas"><div class="subtarefas-conteudo"><div class="modal-topo"><div><p class="eyebrow">CHECKLIST</p><h2>Subtarefas</h2><p id="subtarefas-tarefa" class="subtarefas-tarefa">Tarefa</p></div><button id="fechar-subtarefas" class="fechar" type="button">×</button></div><form id="form-subtarefa"><input id="titulo-subtarefa" maxlength="80" placeholder="Ex.: Revisar introdução" required><button class="primario" type="submit">Adicionar</button></form><p id="subtarefas-progresso" class="subtarefas-progresso">0 de 0 concluídas</p><p id="subtarefas-vazio" class="texto">Nenhuma subtarefa ainda. Adicione a primeira acima.</p><div id="lista-subtarefas" class="lista-subtarefas"></div></div></dialog>
   <dialog id="modal-categorias"><div class="categorias-conteudo"><div class="modal-topo"><div><p class="eyebrow">ORGANIZAÇÃO</p><h2>Minhas categorias</h2></div><button id="fechar-categorias" class="fechar" type="button">×</button></div><form id="form-categoria"><input id="nome-categoria" maxlength="40" placeholder="Ex.: Estudos" required><button id="salvar-categoria" class="primario" type="submit">Adicionar</button><button id="cancelar-categoria" class="texto-botao escondido" type="button">Cancelar</button></form><p id="categorias-vazio" class="texto">Nenhuma categoria cadastrada ainda.</p><div id="lista-categorias" class="lista-categorias"></div></div></dialog>
   <dialog id="conclusao"><div class="confirmacao"><i>✓</i><p class="eyebrow">TAREFA CONCLUÍDA</p><h2>Bom trabalho!</h2><p id="mensagem">A tarefa foi marcada como concluída.</p><button id="continuar" class="primario">Continuar</button></div></dialog>
-  <script src="config.js?v=6"></script>
-  <script src="script.js?v=6"></script>
+  <script src="config.js?v=7"></script>
+  <script src="script.js?v=7"></script>
 </body></html>

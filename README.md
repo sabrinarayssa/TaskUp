@@ -14,8 +14,9 @@ A mesma URL atende a interface web e a API. O frontend é servido pelo próprio 
 
 - **Nome:** `Aluno Demo`
 - **Telefone:** `11999990000`
+- **Senha:** `demo1234`
 
-Também é possível entrar com outro nome e telefone; o cadastro é simples e não usa senha.
+Também é possível criar uma conta nova com nome, telefone e senha. A senha é guardada criptografada (hash) no banco, nunca em texto puro.
 
 ## Sobre o projeto
 
@@ -25,7 +26,7 @@ O projeto usa o modelo cliente/servidor: o frontend consome uma API RESTful, que
 
 ## Funcionalidades
 
-- Cadastro e identificação de usuário por nome e telefone.
+- Cadastro e login de usuário com nome, telefone e senha.
 - Criação, listagem, edição, conclusão e exclusão de tarefas.
 - Categorias para organizar as tarefas.
 - Prazo e prioridade nas tarefas.
@@ -45,6 +46,10 @@ O projeto usa o modelo cliente/servidor: o frontend consome uma API RESTful, que
 - **Render Cloud** para a publicação
 
 As únicas dependências do backend são `express` e `cors`. O SQLite é acessado pelo módulo nativo do Node.js, sem dependência nativa adicional.
+
+### Sobre a senha
+
+A senha é transformada em hash com `scrypt` (módulo nativo `node:crypto`) e um salt aleatório antes de ser gravada. O login confere a senha sem nunca devolvê-la na API. Nesta versão, a sessão fica salva no navegador (`localStorage`) e a identificação das tarefas continua usando nome e telefone; proteger as rotas com um token de sessão é a próxima evolução natural do projeto.
 
 ## Estrutura do projeto
 
@@ -123,8 +128,9 @@ O banco local `backend/tarefas.db` não é enviado ao repositório e não é usa
 
 | Método | Rota | Função |
 |---|---|---|
-| GET | `/usuarios` | Lista usuários |
-| POST | `/usuarios` | Cadastra usuário |
+| GET | `/usuarios` | Lista usuários (sem a senha) |
+| POST | `/usuarios` | Cadastra usuário com senha |
+| POST | `/usuarios/login` | Confere nome, telefone e senha |
 | GET | `/categoria` | Lista categorias |
 | POST | `/categoria` | Cadastra categoria |
 | PUT | `/categoria/:id` | Edita categoria |

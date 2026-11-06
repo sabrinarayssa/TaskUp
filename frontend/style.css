@@ -45,3 +45,5 @@
 .lista-subtarefas-inline{display:grid;gap:6px}
 .detalhes-tarefa .subtarefa{padding:7px 9px}
 .detalhes-vazio{color:#9695a3;font-size:11px;margin:0}
+.erro-login{background:#fdecec;border:1px solid #f2c4c4;border-radius:8px;color:#a63c3c;font-size:12px;line-height:1.45;margin:0 0 14px;padding:10px 12px}
+.cadastro .trocar-modo{display:block;margin:16px auto 0;text-decoration:underline}

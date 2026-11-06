@@ -14,9 +14,10 @@ db.exec('PRAGMA foreign_keys = ON');
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS usuarios (
-    nome      TEXT NOT NULL,
-    telefone  TEXT NOT NULL,
-    criado_em TEXT NOT NULL DEFAULT (datetime('now')),
+    nome       TEXT NOT NULL,
+    telefone   TEXT NOT NULL,
+    senha_hash TEXT,
+    criado_em  TEXT NOT NULL DEFAULT (datetime('now')),
     PRIMARY KEY (nome, telefone)
   );
 
@@ -68,6 +69,17 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_subtarefas_tarefa
     ON subtarefas (tarefa_id);
 `);
+
+// Migração de usuários: bancos criados antes da senha não têm a coluna
+// senha_hash. O ALTER TABLE adiciona a coluna sem apagar os usuários.
+const colunasUsuarios = db
+  .prepare('PRAGMA table_info(usuarios)')
+  .all()
+  .map((coluna) => coluna.name);
+
+if (!colunasUsuarios.includes('senha_hash')) {
+  db.exec('ALTER TABLE usuarios ADD COLUMN senha_hash TEXT');
+}
 
 // Migração simples: bancos criados antes desta etapa não têm as colunas
 // prazo, prioridade e excluida_em. O ALTER TABLE adiciona sem apagar dados.
