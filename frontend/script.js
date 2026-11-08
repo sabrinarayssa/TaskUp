@@ -6,7 +6,7 @@ const CABECALHO_JSON = { 'Content-Type': 'application/json' };
 
 // ===================== Estado do app =====================
 const estado = {
-  usuario: { nome: '', telefone: '' }, // quem está "logado" (nome + telefone)
+  usuario: { nome: '', telefone: '', email: '' }, // quem está "logado"
   tarefas: [],                         // tarefas ativas (fora da lixeira)
   lixeira: [],                         // tarefas excluídas
   categorias: [],                      // categorias do usuário
@@ -333,7 +333,9 @@ function abrirApp(usuario) {
   estado.usuario = usuario;
   document.querySelector('#nome').textContent = usuario.nome;
   document.querySelector('#perfil-nome').textContent = usuario.nome;
-  document.querySelector('#perfil-telefone').textContent = usuario.telefone;
+  // O perfil mostra o e-mail (identidade de login) e o telefone no tooltip.
+  document.querySelector('#perfil-contato').textContent = usuario.email;
+  document.querySelector('#perfil-contato').title = `Telefone: ${usuario.telefone}`;
   document.querySelector('#avatar').textContent = usuario.nome.slice(0, 2).toUpperCase();
   document.querySelector('#onboarding').classList.add('escondido');
   app.classList.remove('escondido');
@@ -351,10 +353,21 @@ function limparErroLogin() {
   erro.classList.add('escondido');
 }
 
-// Atualiza os textos conforme a pessoa escolheu entrar ou criar conta.
+// Atualiza os textos e os campos conforme a pessoa escolheu entrar ou criar conta.
 function atualizarModoLogin() {
   const criar = modoLogin === 'criar';
 
+  // No login bastam e-mail e senha. Nome e telefone são dados de cadastro,
+  // então ficam escondidos e deixam de ser obrigatórios.
+  ['#rotulo-nome', '#nome-login', '#rotulo-telefone', '#telefone-login'].forEach(
+    (seletor) => {
+      document.querySelector(seletor).classList.toggle('escondido', !criar);
+    },
+  );
+  document.querySelector('#nome-login').required = criar;
+  document.querySelector('#telefone-login').required = criar;
+
+  document.querySelector('#email-login').autocomplete = criar ? 'email' : 'username';
   document.querySelector('#botao-login').textContent = criar ? 'Criar conta →' : 'Entrar →';
   document.querySelector('#alternar-modo').textContent = criar
     ? 'Já tem conta? Entrar'
@@ -363,8 +376,8 @@ function atualizarModoLogin() {
     ? 'new-password'
     : 'current-password';
   document.querySelector('#dica-login').textContent = criar
-    ? 'A senha precisa ter pelo menos 6 caracteres e fica guardada criptografada.'
-    : 'Sua senha fica guardada criptografada no servidor. Nome e telefone identificam suas tarefas.';
+    ? 'A senha precisa ter pelo menos 6 caracteres e fica guardada criptografada. Nome, telefone e e-mail identificam sua conta.'
+    : 'Entre com o e-mail e a senha cadastrados. Sua senha fica guardada criptografada no servidor.';
 
   limparErroLogin();
 }
@@ -374,14 +387,16 @@ document.querySelector('#alternar-modo').addEventListener('click', () => {
   atualizarModoLogin();
 });
 
-// Envia nome, telefone e senha para o backend.
-// No modo 'criar', cadastra; no modo 'entrar', confere a senha.
-async function autenticar(nome, telefone, senha) {
-  const rota = modoLogin === 'criar' ? '/usuarios' : '/usuarios/login';
+// No modo 'criar', envia nome, telefone, e-mail e senha.
+// No modo 'entrar', envia apenas e-mail e senha.
+async function autenticar({ nome, telefone, email, senha }) {
+  const criar = modoLogin === 'criar';
+  const rota = criar ? '/usuarios' : '/usuarios/login';
+  const corpo = criar ? { nome, telefone, email, senha } : { email, senha };
   const resposta = await fetch(`${API}${rota}`, {
     method: 'POST',
     headers: CABECALHO_JSON,
-    body: JSON.stringify({ nome, telefone, senha }),
+    body: JSON.stringify(corpo),
   });
 
   const dados = await resposta.json().catch(() => ({}));
@@ -389,7 +404,12 @@ async function autenticar(nome, telefone, senha) {
     throw new Error(dados.erro || 'Não foi possível entrar.');
   }
 
-  const usuario = { nome: dados.nome, telefone: dados.telefone, senhaOk: true };
+  const usuario = {
+    nome: dados.nome,
+    telefone: dados.telefone,
+    email: dados.email,
+    senhaOk: true,
+  };
 
   // Carrega os dados antes de esconder a tela de login. Se a API falhar,
   // a pessoa continua no login e vê a mensagem de erro.
@@ -404,7 +424,9 @@ function lerUsuarioSalvo() {
   try {
     const usuario = JSON.parse(localStorage.getItem(CHAVE_USUARIO));
     // senhaOk garante que sessões antigas (antes da senha) peçam login de novo.
-    return usuario?.nome && usuario?.telefone && usuario?.senhaOk ? usuario : null;
+    return usuario?.nome && usuario?.telefone && usuario?.email && usuario?.senhaOk
+      ? usuario
+      : null;
   } catch {
     return null;
   }
@@ -412,7 +434,7 @@ function lerUsuarioSalvo() {
 
 function sair() {
   localStorage.removeItem(CHAVE_USUARIO);
-  estado.usuario = { nome: '', telefone: '' };
+  estado.usuario = { nome: '', telefone: '', email: '' };
   estado.tarefas = [];
   estado.lixeira = [];
   estado.categorias = [];
@@ -443,15 +465,17 @@ document.querySelector('#form-login').addEventListener('submit', async (evento) 
   evento.preventDefault();
   const nome = document.querySelector('#nome-login').value.trim();
   const telefone = document.querySelector('#telefone-login').value.trim();
+  const email = document.querySelector('#email-login').value.trim();
   const senha = document.querySelector('#senha-login').value;
-  if (!nome || !telefone || !senha) return;
+  if (!email || !senha) return;
+  if (modoLogin === 'criar' && (!nome || !telefone)) return;
 
   limparErroLogin();
   const botao = document.querySelector('#botao-login');
   botao.disabled = true;
 
   try {
-    await autenticar(nome, telefone, senha);
+    await autenticar({ nome, telefone, email, senha });
   } catch (erro) {
     mostrarErroLogin(mensagemDeErro(erro));
   } finally {

@@ -16,6 +16,7 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS usuarios (
     nome       TEXT NOT NULL,
     telefone   TEXT NOT NULL,
+    email      TEXT,
     senha_hash TEXT,
     criado_em  TEXT NOT NULL DEFAULT (datetime('now')),
     PRIMARY KEY (nome, telefone)
@@ -80,6 +81,16 @@ const colunasUsuarios = db
 if (!colunasUsuarios.includes('senha_hash')) {
   db.exec('ALTER TABLE usuarios ADD COLUMN senha_hash TEXT');
 }
+
+// Migração de usuários: bancos criados antes do e-mail não têm a coluna
+// email. O ALTER TABLE adiciona sem apagar os usuários existentes.
+if (!colunasUsuarios.includes('email')) {
+  db.exec('ALTER TABLE usuarios ADD COLUMN email TEXT');
+}
+
+// O e-mail precisa ser único. No SQLite, um índice UNIQUE permite vários
+// NULL, então os usuários antigos (sem e-mail) continuam válidos.
+db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_usuarios_email ON usuarios (email)');
 
 // Migração simples: bancos criados antes desta etapa não têm as colunas
 // prazo, prioridade e excluida_em. O ALTER TABLE adiciona sem apagar dados.
