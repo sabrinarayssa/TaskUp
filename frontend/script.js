@@ -492,6 +492,7 @@ document.querySelector('#abrir-categorias-mobile').addEventListener('click', () 
 // ===================== Ações da tela =====================
 function abrirFormulario(tarefa) {
   form.reset();
+  fecharNovaCategoria();
   document.querySelector('#id-tarefa').value = tarefa ? tarefa.id : '';
   document.querySelector('#modal-eyebrow').textContent = tarefa ? 'EDITAR TAREFA' : 'NOVA TAREFA';
   document.querySelector('#modal-titulo').textContent = tarefa ? 'Editar tarefa' : 'Criar tarefa';
@@ -520,6 +521,7 @@ document.querySelectorAll('.abrir, #nova').forEach((botao) => {
 });
 document.querySelector('#fechar').addEventListener('click', () => modal.close());
 document.querySelector('#cancelar').addEventListener('click', () => modal.close());
+modal.addEventListener('close', fecharNovaCategoria);
 document.querySelector('#continuar').addEventListener('click', () => conclusao.close());
 
 // ===================== Categorias =====================
@@ -540,28 +542,59 @@ function editarCategoria(categoria) {
 }
 
 // Cria uma categoria sem sair do formulário de tarefa.
+const campoNovaCategoria = document.querySelector('#nova-categoria-campo');
+const inputNovaCategoria = document.querySelector('#nome-nova-categoria');
+
+function abrirNovaCategoria() {
+  campoNovaCategoria.classList.remove('escondido');
+  inputNovaCategoria.value = '';
+  inputNovaCategoria.focus();
+}
+
+function fecharNovaCategoria() {
+  campoNovaCategoria.classList.add('escondido');
+  inputNovaCategoria.value = '';
+}
+
 async function criarCategoriaRapida() {
-  const nome = prompt('Nome da nova categoria:');
-  if (!nome || !nome.trim()) return;
+  const nome = inputNovaCategoria.value.trim();
+  if (!nome) {
+    inputNovaCategoria.focus();
+    return;
+  }
+
+  const botao = document.querySelector('#salvar-nova-categoria');
+  botao.disabled = true;
 
   try {
     const categoria = await api('/categoria', {
       method: 'POST',
       headers: CABECALHO_JSON,
       body: JSON.stringify({
-        categoria: nome.trim(),
+        categoria: nome,
         nome: estado.usuario.nome,
         telefone: estado.usuario.telefone,
       }),
     });
     await carregarCategorias();
     document.querySelector('#categoria').value = String(categoria.id);
+    fecharNovaCategoria();
   } catch (erro) {
     alert(mensagemDeErro(erro));
+  } finally {
+    botao.disabled = false;
   }
 }
 
-document.querySelector('#nova-categoria-tarefa').addEventListener('click', criarCategoriaRapida);
+document.querySelector('#nova-categoria-tarefa').addEventListener('click', abrirNovaCategoria);
+document.querySelector('#salvar-nova-categoria').addEventListener('click', criarCategoriaRapida);
+document.querySelector('#cancelar-nova-categoria').addEventListener('click', fecharNovaCategoria);
+inputNovaCategoria.addEventListener('keydown', (evento) => {
+  if (evento.key !== 'Enter') return;
+  // Impede que o Enter salve a tarefa inteira sem querer.
+  evento.preventDefault();
+  criarCategoriaRapida();
+});
 
 document.querySelector('#abrir-categorias').addEventListener('click', async () => {
   resetarEdicaoCategoria();

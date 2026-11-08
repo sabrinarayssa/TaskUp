@@ -47,3 +47,15 @@
 .detalhes-vazio{color:#9695a3;font-size:11px;margin:0}
 .erro-login{background:#fdecec;border:1px solid #f2c4c4;border-radius:8px;color:#a63c3c;font-size:12px;line-height:1.45;margin:0 0 14px;padding:10px 12px}
 .cadastro .trocar-modo{display:block;margin:16px auto 0;text-decoration:underline}
+
+/* Ícones da navegação lateral (SVG de traço) */
+.app aside nav button{display:flex;align-items:center;gap:10px;transition:color .15s ease}
+.app aside nav button:hover{color:#5f55d8}
+.app aside nav button b{float:none;margin-left:auto}
+.nav-icone{width:18px;height:18px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* Criação rápida de categoria dentro do modal de tarefa */
+.nova-categoria{margin-top:8px}
+.nova-categoria input{flex:1;min-width:0;font-size:13px;padding:9px 11px}
+.nova-categoria .primario{font-size:12px;padding:9px 13px;white-space:nowrap}
+.nova-categoria .texto-botao{padding:9px 4px;white-space:nowrap}
