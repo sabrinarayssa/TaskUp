@@ -14,9 +14,10 @@ A mesma URL atende a interface web e a API. O frontend é servido pelo próprio 
 
 - **Nome:** `Aluno Demo`
 - **Telefone:** `11999990000`
+- **E-mail:** `aluno@demo.com`
 - **Senha:** `demo1234`
 
-Também é possível criar uma conta nova com nome, telefone e senha. A senha é guardada criptografada (hash) no banco, nunca em texto puro.
+O login é feito com **e-mail e senha**. Também é possível criar uma conta nova com nome, telefone, e-mail e senha. A senha é guardada criptografada (hash) no banco, nunca em texto puro.
 
 ## Sobre o projeto
 
@@ -26,7 +27,8 @@ O projeto usa o modelo cliente/servidor: o frontend consome uma API RESTful, que
 
 ## Funcionalidades
 
-- Cadastro e login de usuário com nome, telefone e senha.
+- Cadastro e login de usuário com nome, telefone, e-mail e senha.
+- Recuperação de senha confirmando e-mail e telefone cadastrados.
 - Criação, listagem, edição, conclusão e exclusão de tarefas.
 - Categorias para organizar as tarefas.
 - Prazo e prioridade nas tarefas.
@@ -49,7 +51,9 @@ As únicas dependências do backend são `express` e `cors`. O SQLite é acessad
 
 ### Sobre a senha
 
-A senha é transformada em hash com `scrypt` (módulo nativo `node:crypto`) e um salt aleatório antes de ser gravada. O login confere a senha sem nunca devolvê-la na API. Nesta versão, a sessão fica salva no navegador (`localStorage`) e a identificação das tarefas continua usando nome e telefone; proteger as rotas com um token de sessão é a próxima evolução natural do projeto.
+A senha é transformada em hash com `scrypt` (módulo nativo `node:crypto`) e um salt aleatório antes de ser gravada. O login é feito com **e-mail e senha** e nunca devolve o hash na API. Nesta versão, a sessão fica salva no navegador (`localStorage`) e a identificação das tarefas continua usando nome e telefone; proteger as rotas com um token de sessão é a próxima evolução natural do projeto.
+
+Na recuperação de senha, a pessoa confirma o **e-mail e o telefone** cadastrados e define uma nova senha. O telefone é comparado apenas pelos dígitos, então `(11) 99999-0000` e `11999990000` são equivalentes. Esse fluxo não depende de envio de e-mail.
 
 ## Estrutura do projeto
 
@@ -129,8 +133,9 @@ O banco local `backend/tarefas.db` não é enviado ao repositório e não é usa
 | Método | Rota | Função |
 |---|---|---|
 | GET | `/usuarios` | Lista usuários (sem a senha) |
-| POST | `/usuarios` | Cadastra usuário com senha |
-| POST | `/usuarios/login` | Confere nome, telefone e senha |
+| POST | `/usuarios` | Cadastra usuário com nome, telefone, e-mail e senha |
+| POST | `/usuarios/login` | Confere e-mail e senha |
+| POST | `/usuarios/redefinir-senha-simples` | Confere e-mail + telefone e grava a nova senha |
 | GET | `/categoria` | Lista categorias |
 | POST | `/categoria` | Cadastra categoria |
 | PUT | `/categoria/:id` | Edita categoria |
@@ -150,6 +155,6 @@ O banco local `backend/tarefas.db` não é enviado ao repositório e não é usa
 
 ## Testes
 
-Os testes foram realizados manualmente com requisições HTTP e pelo navegador. Foram verificados cadastro de usuário, criação e edição de tarefas, categorias, subtarefas, busca, filtros, lixeira, restauração, exclusão definitiva e o fluxo completo da interface.
+Os testes foram realizados manualmente com requisições HTTP e pelo navegador. Foram verificados cadastro de usuário, login por e-mail, recuperação de senha (e-mail/telefone corretos, telefone errado e senha curta), criação e edição de tarefas, categorias, subtarefas, busca, filtros, lixeira, restauração, exclusão definitiva e o fluxo completo da interface.
 
 O artigo técnico com a descrição do projeto e a tabela de testes está em [`docs/TaskUp - Artigo Tecnico (atualizado).pdf`](docs/TaskUp%20-%20Artigo%20Tecnico%20(atualizado).pdf).

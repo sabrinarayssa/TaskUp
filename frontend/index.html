@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>TaskUp</title><link rel="stylesheet" href="style.css?v=9"></head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>TaskUp</title><link rel="stylesheet" href="style.css?v=10"></head>
 <body>
   <section id="onboarding" class="onboarding">
     <div class="card cadastro">
@@ -8,7 +8,22 @@
       <div class="marca">✓</div><p class="eyebrow">COMECE POR AQUI</p>
       <h1>Vamos começar?</h1>
       <p class="texto">Informe seus dados para identificar as tarefas que você criar.</p>
-      <form id="form-login"><label for="nome-login" id="rotulo-nome">Nome</label><input id="nome-login" maxlength="80" placeholder="Ex.: Sabrina Rayssa" autocomplete="name" required><label for="telefone-login" id="rotulo-telefone">Telefone</label><input id="telefone-login" type="tel" maxlength="20" placeholder="Ex.: (11) 99999-9999" autocomplete="tel" required><label for="email-login">E-mail</label><input id="email-login" type="email" maxlength="120" placeholder="voce@exemplo.com" autocomplete="email" required><label for="senha-login">Senha</label><input id="senha-login" type="password" minlength="6" maxlength="60" placeholder="Mínimo de 6 caracteres" autocomplete="current-password" required><small id="dica-login">Sua senha fica guardada criptografada no servidor. Entre com seu e-mail e senha.</small><p id="erro-login" class="erro-login escondido" role="alert"></p><button id="botao-login" class="primario" type="submit">Entrar →</button><button id="alternar-modo" class="texto-botao trocar-modo" type="button">Ainda não tem conta? Criar conta</button></form>
+      <form id="form-login"><label for="nome-login" id="rotulo-nome">Nome</label><input id="nome-login" maxlength="80" placeholder="Ex.: Sabrina Rayssa" autocomplete="name" required><label for="telefone-login" id="rotulo-telefone">Telefone</label><input id="telefone-login" type="tel" maxlength="20" placeholder="Ex.: (11) 99999-9999" autocomplete="tel" required><label for="email-login">E-mail</label><input id="email-login" type="email" maxlength="120" placeholder="voce@exemplo.com" autocomplete="email" required><label for="senha-login">Senha</label><input id="senha-login" type="password" minlength="6" maxlength="60" placeholder="Mínimo de 6 caracteres" autocomplete="current-password" required><button id="esqueci-senha" class="texto-botao esqueci-senha" type="button">Esqueci minha senha</button><small id="dica-login">Sua senha fica guardada criptografada no servidor. Entre com seu e-mail e senha.</small><p id="erro-login" class="erro-login escondido" role="alert"></p><button id="botao-login" class="primario" type="submit">Entrar →</button><button id="alternar-modo" class="texto-botao trocar-modo" type="button">Ainda não tem conta? Criar conta</button></form>
+      <form id="form-recuperar" class="escondido">
+        <h2 class="titulo-recuperar">Redefinir senha</h2>
+        <p class="texto">Confirme o e-mail e o telefone cadastrados e escolha uma nova senha.</p>
+        <label for="email-recuperar">E-mail</label>
+        <input id="email-recuperar" type="email" maxlength="120" placeholder="voce@exemplo.com" autocomplete="email" required>
+        <label for="telefone-recuperar">Telefone</label>
+        <input id="telefone-recuperar" type="tel" maxlength="20" placeholder="Ex.: (31) 97503-3481" autocomplete="tel" required>
+        <label for="nova-senha-recuperar">Nova senha</label>
+        <input id="nova-senha-recuperar" type="password" minlength="6" maxlength="60" placeholder="Mínimo de 6 caracteres" autocomplete="new-password" required>
+        <label for="confirmar-senha-recuperar">Confirmar nova senha</label>
+        <input id="confirmar-senha-recuperar" type="password" minlength="6" maxlength="60" placeholder="Digite a senha novamente" autocomplete="new-password" required>
+        <p id="mensagem-recuperar" class="escondido" role="status"></p>
+        <button id="botao-recuperar" class="primario" type="submit">Redefinir senha</button>
+        <button id="voltar-login" class="texto-botao trocar-modo" type="button">Voltar para o login</button>
+      </form>
     </div>
   </section>
 
@@ -36,5 +51,5 @@
   <dialog id="modal-categorias"><div class="categorias-conteudo"><div class="modal-topo"><div><p class="eyebrow">ORGANIZAÇÃO</p><h2>Minhas categorias</h2></div><button id="fechar-categorias" class="fechar" type="button">×</button></div><form id="form-categoria"><input id="nome-categoria" maxlength="40" placeholder="Ex.: Estudos" required><button id="salvar-categoria" class="primario" type="submit">Adicionar</button><button id="cancelar-categoria" class="texto-botao escondido" type="button">Cancelar</button></form><p id="categorias-vazio" class="texto">Nenhuma categoria cadastrada ainda.</p><div id="lista-categorias" class="lista-categorias"></div></div></dialog>
   <dialog id="conclusao"><div class="confirmacao"><i>✓</i><p class="eyebrow">TAREFA CONCLUÍDA</p><h2>Bom trabalho!</h2><p id="mensagem">A tarefa foi marcada como concluída.</p><button id="continuar" class="primario">Continuar</button></div></dialog>
   <script src="config.js?v=7"></script>
-  <script src="script.js?v=8"></script>
+  <script src="script.js?v=9"></script>
 </body></html>

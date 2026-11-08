@@ -367,6 +367,9 @@ function atualizarModoLogin() {
   document.querySelector('#nome-login').required = criar;
   document.querySelector('#telefone-login').required = criar;
 
+  // Recuperar senha só faz sentido no modo "Entrar".
+  document.querySelector('#esqueci-senha').classList.toggle('escondido', criar);
+
   document.querySelector('#email-login').autocomplete = criar ? 'email' : 'username';
   document.querySelector('#botao-login').textContent = criar ? 'Criar conta →' : 'Entrar →';
   document.querySelector('#alternar-modo').textContent = criar
@@ -385,6 +388,86 @@ function atualizarModoLogin() {
 document.querySelector('#alternar-modo').addEventListener('click', () => {
   modoLogin = modoLogin === 'criar' ? 'entrar' : 'criar';
   atualizarModoLogin();
+});
+
+// ===================== Recuperação de senha =====================
+const formLogin = document.querySelector('#form-login');
+const formRecuperar = document.querySelector('#form-recuperar');
+
+function limparMensagemRecuperar() {
+  const mensagem = document.querySelector('#mensagem-recuperar');
+  mensagem.textContent = '';
+  mensagem.classList.add('escondido');
+  mensagem.classList.remove('erro-login', 'sucesso-login');
+}
+
+function mostrarMensagemRecuperar(texto, tipo) {
+  const mensagem = document.querySelector('#mensagem-recuperar');
+  mensagem.textContent = texto;
+  mensagem.classList.remove('escondido', 'erro-login', 'sucesso-login');
+  mensagem.classList.add(tipo === 'sucesso' ? 'sucesso-login' : 'erro-login');
+}
+
+function abrirRecuperacao() {
+  const email = document.querySelector('#email-login').value.trim();
+  document.querySelector('#email-recuperar').value = email;
+  formLogin.classList.add('escondido');
+  formRecuperar.classList.remove('escondido');
+  limparMensagemRecuperar();
+  document.querySelector(email ? '#telefone-recuperar' : '#email-recuperar').focus();
+}
+
+function voltarLogin() {
+  formRecuperar.reset();
+  formRecuperar.classList.add('escondido');
+  formLogin.classList.remove('escondido');
+  limparMensagemRecuperar();
+}
+
+document.querySelector('#esqueci-senha').addEventListener('click', abrirRecuperacao);
+document.querySelector('#voltar-login').addEventListener('click', voltarLogin);
+
+formRecuperar.addEventListener('submit', async (evento) => {
+  evento.preventDefault();
+  const email = document.querySelector('#email-recuperar').value.trim();
+  const telefone = document.querySelector('#telefone-recuperar').value.trim();
+  const novaSenha = document.querySelector('#nova-senha-recuperar').value;
+  const confirmar = document.querySelector('#confirmar-senha-recuperar').value;
+
+  if (!email || !telefone) return;
+  if (novaSenha.length < 6) {
+    mostrarMensagemRecuperar('A nova senha precisa ter pelo menos 6 caracteres.', 'erro');
+    return;
+  }
+  if (novaSenha !== confirmar) {
+    mostrarMensagemRecuperar('As duas senhas não são iguais.', 'erro');
+    return;
+  }
+
+  limparMensagemRecuperar();
+  const botao = document.querySelector('#botao-recuperar');
+  botao.disabled = true;
+
+  try {
+    const resposta = await fetch(`${API}/usuarios/redefinir-senha-simples`, {
+      method: 'POST',
+      headers: CABECALHO_JSON,
+      body: JSON.stringify({ email, telefone, novaSenha }),
+    });
+    const dados = await resposta.json().catch(() => ({}));
+    if (!resposta.ok) {
+      throw new Error(dados.erro || 'Não foi possível redefinir a senha.');
+    }
+
+    // Limpa as senhas digitadas, mas mantém o e-mail para facilitar o login.
+    formRecuperar.reset();
+    document.querySelector('#email-recuperar').value = email;
+    mostrarMensagemRecuperar(dados.mensagem, 'sucesso');
+  } catch (erro) {
+    mostrarMensagemRecuperar(mensagemDeErro(erro), 'erro');
+  } finally {
+    botao.disabled = false;
+  }
 });
 
 // No modo 'criar', envia nome, telefone, e-mail e senha.
@@ -456,6 +539,7 @@ function sair() {
   app.classList.add('escondido');
   document.querySelector('#onboarding').classList.remove('escondido');
   document.querySelector('#form-login').reset();
+  voltarLogin();
   modoLogin = 'entrar';
   atualizarModoLogin();
   renderizar();

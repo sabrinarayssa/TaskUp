@@ -13,6 +13,11 @@ function normalizarEmail(email) {
     .toLowerCase();
 }
 
+// Telefone é comparado só pelos dígitos: "(31) 97503-3481" vira "31975033481".
+function normalizarTelefone(telefone) {
+  return String(telefone ?? '').replace(/\D/g, '');
+}
+
 function erroDeDuplicidade(erro) {
   return erro.code === 'ERR_SQLITE_ERROR' && /UNIQUE constraint failed/.test(erro.message);
 }
@@ -105,6 +110,39 @@ router.post('/login', (req, res) => {
   }
 
   res.json({ nome: usuario.nome, telefone: usuario.telefone, email: usuario.email });
+});
+
+// POST /usuarios/redefinir-senha-simples — confirma e-mail + telefone.
+// Não depende de SMTP nem de link: a pessoa informa os dois dados da conta
+// e já escolhe a nova senha.
+router.post('/redefinir-senha-simples', (req, res) => {
+  const email = normalizarEmail(req.body.email);
+  const telefone = normalizarTelefone(req.body.telefone);
+  const { novaSenha } = req.body;
+
+  if (!email || !telefone || !novaSenha) {
+    return res
+      .status(400)
+      .json({ erro: 'E-mail, telefone e nova senha são obrigatórios.' });
+  }
+  if (!EMAIL_VALIDO.test(email)) {
+    return res.status(400).json({ erro: 'Informe um e-mail válido.' });
+  }
+  if (String(novaSenha).length < SENHA_MINIMA) {
+    return res
+      .status(400)
+      .json({ erro: `A nova senha precisa ter pelo menos ${SENHA_MINIMA} caracteres.` });
+  }
+
+  const usuario = usuarioDB.buscarPorEmailComSenha(email);
+
+  if (!usuario || normalizarTelefone(usuario.telefone) !== telefone) {
+    return res.status(401).json({ erro: 'E-mail ou telefone não conferem.' });
+  }
+
+  usuarioDB.definirSenha(usuario.nome, usuario.telefone, criarHash(novaSenha));
+
+  res.json({ mensagem: 'Senha redefinida com sucesso. Você já pode entrar.' });
 });
 
 module.exports = router;
